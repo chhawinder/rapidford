@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  upload-service:
+    build:
+      context: ./upload-service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=${UPLOAD_PORT}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_SQS_QUEUE_URL=${AWS_SQS_QUEUE_URL}
+
+  preview-service:
+    build:
+      context: ./preview-service
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_SQS_QUEUE_URL=${AWS_SQS_QUEUE_URL}
+
+  convert-service:
+    build:
+      context: ./convert-service
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_SQS_QUEUE_URL=${AWS_SQS_QUEUE_URL}
+  encrypted-convert-service:
+    build:
+      context: ./encrypted-convert-service
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5004"
+    environment:
+      - PORT=5004
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_SQS_QUEUE_URL=${AWS_SQS_QUEUE_URL}
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_UPLOAD_URL=${REACT_APP_UPLOAD_URL}
+      - REACT_APP_PREVIEW_URL=${REACT_APP_PREVIEW_URL}
+      - REACT_APP_SIMPLE_CONVERT_URL=${REACT_APP_SIMPLE_CONVERT_URL}
+      - REACT_APP_AUTH_CONVERT_URL=${REACT_APP_AUTH_CONVERT_URL}
