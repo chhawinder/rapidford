@@ -13,6 +13,8 @@ function App() {
   const [streamContent, setStreamContent] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [contentType, setContentType] = useState(null);
+  const [showAbout, setShowAbout] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
   
   // Refs for content containers
   const textContainerRef = useRef(null);
