@@ -45,18 +45,16 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://rapidford.onrender.com/upload/', {
+      let response = await fetch('https://rapidford.onrender.com/upload/', {
         method: 'POST',
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+          'Content-Type': 'application/json'
         },
-        body: formData,
+        body: JSON.stringify(formData),
         mode: 'cors'
       });
 
-      
+      response = await response.json();
       console.log('Filedetails: ',response);
       if (response.type === 'opaque') {
         // Assuming upload was successful since we can't read the response
