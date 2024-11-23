@@ -48,9 +48,9 @@ function App() {
       let response = await fetch('https://rapidford.onrender.com/upload/', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Access-Control-Allow-Origin':'*'
         },
-        body: JSON.stringify(formData),
+        body: formData,
         mode: 'cors'
       });
 
