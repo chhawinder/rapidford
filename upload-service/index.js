@@ -102,7 +102,7 @@ dotenv.config(); // Load environment variables from the .env file
 
 const app = express();
 
-const allowedDomain = 'https://rapidford-5sgy.vercel.app/';
+const allowedDomain = 'https://rapidford-6.onrender.com/';
 
 // Configure CORS
 app.use(cors({
