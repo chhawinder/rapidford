@@ -79,7 +79,7 @@ function App() {
     setStreamContent('');
     setResponseMessage('');
     
-    const response = await fetch(`http://localhost:5002/preview/${fileKey}`, {
+    const response = await fetch(`https://rapidford-opng.vercel.app/preview/${fileKey}`, {
       method: 'GET',
     });
 
@@ -149,7 +149,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5003/convert/${fileKey}`, {
+      const response = await fetch(`https://rapidford-5ef2.vercel.app/convert/${fileKey}`, {
         method: 'GET',
       });
 
@@ -181,7 +181,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5004/convertAuth/${fileKey}`, {
+      const response = await fetch(`https://rapidford-tttg.vercel.app/convertAuth/${fileKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
