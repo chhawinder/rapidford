@@ -54,8 +54,8 @@ function App() {
         mode: 'no-cors'
       });
 
-      const data = await response.json();
-      console.log('Filedetails: ',data);
+      
+      console.log('Filedetails: ',response);
       if (response.ok) {
         const actualFileKey = data.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
         console.log('Actual file key: ',actualFileKey);
