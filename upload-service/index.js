@@ -104,6 +104,7 @@ const app = express();
 
 const allowedDomain = 'https://rapidford-6.onrender.com/';
 
+app.use(express.json());
 // Configure CORS
 app.use(cors({
     origin: '*', // Only allow this domain
@@ -112,7 +113,7 @@ app.use(cors({
     credentials: true // Enable credentials sharing if needed
 }));
 
-app.use(express.json()); // Parse incoming JSON requests
+ // Parse incoming JSON requests
 
 console.log("working...");
 
