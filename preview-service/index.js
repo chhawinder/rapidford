@@ -6,7 +6,7 @@ import cors from "cors";
 dotenv.config();
 
 const app = express();
-const allowedDomain = 'https://rapidford-5sgy.vercel.app/';
+const allowedDomain = 'https://rapidford-6.onrender.com/';
 
 // Configure CORS
 app.use(cors({
