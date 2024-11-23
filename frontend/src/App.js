@@ -43,7 +43,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://rapidford.vercel.app/upload/', {
+      const response = await fetch('https://rapidford.onrender.com/upload/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -79,7 +79,7 @@ function App() {
     setStreamContent('');
     setResponseMessage('');
     
-    const response = await fetch(`http://localhost:5002/preview/${fileKey}`, {
+    const response = await fetch(`https://rapidford-1.onrender.com/preview/${fileKey}`, {
       method: 'GET',
     });
 
@@ -149,7 +149,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5003/convert/${fileKey}`, {
+      const response = await fetch(`https://rapidford-4.onrender.com/convert/${fileKey}`, {
         method: 'GET',
       });
 
@@ -181,7 +181,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5004/convertAuth/${fileKey}`, {
+      const response = await fetch(`https://rapidford-5.onrender.com/convertAuth/${fileKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
