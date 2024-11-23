@@ -26,24 +26,21 @@ const upload = multer({
 
 // Route for uploading files to S3
 router.post("/", upload.single("file"), async (req, res, next) => {
+  // CORS headers for POST request
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("access-control-allow-origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+
   try {
     console.log("Received request to upload file.");
-
     const file = req.file;
-    console.log("File received:", file);
 
     if (!file) {
       console.log("No file uploaded.");
       return res.status(400).json({ error: "No file uploaded." });
     }
 
-    // With multer-s3, the file is already uploaded to S3 at this point
-    // The file object contains useful metadata
     const fileDetails = {
       bucket: process.env.AWS_S3_BUCKET_NAME,
       key: file.key,
@@ -55,12 +52,7 @@ router.post("/", upload.single("file"), async (req, res, next) => {
 
     console.log("File successfully uploaded to S3:", fileDetails);
 
-    // If you want to send to SQS, you can do it here
-    // await sendToQueue(fileDetails);
-    if(req.method === 'OPTIONS'){
-      return res.status(204).send('');
-      next();
-    }
+    // Respond with file details
     res.status(200).json({
       message: "File uploaded successfully",
       fileDetails
@@ -68,11 +60,19 @@ router.post("/", upload.single("file"), async (req, res, next) => {
 
   } catch (err) {
     console.error("Error uploading file:", err);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Internal server error",
-      message: err.message 
+      message: err.message
     });
   }
+});
+
+// Handle OPTIONS preflight request
+router.options("/", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+  res.status(204).send();
 });
 
 export default router;
