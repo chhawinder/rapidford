@@ -103,7 +103,7 @@ dotenv.config(); // Load environment variables from the .env file
 const app = express();
 
 const corsOptions = {
-  origin: '*', // Your React app's URL
+  origin: 'https://rapidford-6.onrender.com', // Your React app's URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Enable credentials (cookies, authorization headers, etc.)
