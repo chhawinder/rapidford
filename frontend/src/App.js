@@ -57,12 +57,12 @@ function App() {
       
       console.log('Filedetails: ',response);
       if (response.ok) {
-        const actualFileKey = data.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
+        const actualFileKey = response.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
         console.log('Actual file key: ',actualFileKey);
         setFileKey(actualFileKey);
-        setResponseMessage(`File uploaded successfully: ${data.fileDetails.key}`);
+        setResponseMessage(`File uploaded successfully: ${response.fileDetails.key}`);
       } else {
-        setResponseMessage(`Error: ${data.error}`);
+        setResponseMessage(`Error: ${response.error}`);
       }
     } catch (error) {
       setResponseMessage(`Error: ${error.message}`);
