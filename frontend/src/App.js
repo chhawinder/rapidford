@@ -53,7 +53,7 @@ function App() {
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
         body: formData,
-        mode: 'no-cors'
+        mode: 'cors'
       });
 
       
