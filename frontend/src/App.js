@@ -43,7 +43,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://rapidford-b44k.vercel.app/upload', {
+      const response = await fetch('https://rapidford-b44k.vercel.app/upload/', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
