@@ -43,7 +43,7 @@ function App() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:5001/upload', {
+      const response = await fetch('https://rapidford-b44k.vercel.app/upload', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -52,9 +52,12 @@ function App() {
       });
 
       const data = await response.json();
+      console.log('Filedetails: ',data);
       if (response.ok) {
-        setFileKey(data.fileDetails.Key);
-        setResponseMessage(`File uploaded successfully: ${data.fileDetails.Key}`);
+        const actualFileKey = data.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
+        console.log('Actual file key: ',actualFileKey);
+        setFileKey(actualFileKey);
+        setResponseMessage(`File uploaded successfully: ${data.fileDetails.key}`);
       } else {
         setResponseMessage(`Error: ${data.error}`);
       }
