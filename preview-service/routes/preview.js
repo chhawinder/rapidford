@@ -7,7 +7,8 @@ const router = express.Router();
 
 // Route to stream file from S3
 router.get("/:fileKey", async (req, res) => {
-  const { fileKey } = req.params;
+  let { fileKey } = req.params;
+  fileKey = 'uploads/' + fileKey + '.docx';
   console.log(`[START] Attempting to stream file: ${fileKey}`);
 
   try {

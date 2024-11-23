@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import AboutModal from './components/AboutModal/AboutModal';
 import './App.css';
+import './components/AboutModal/AboutModal.css';
 import mammoth from 'mammoth';
 
 function App() {
@@ -13,8 +15,14 @@ function App() {
   const [streamContent, setStreamContent] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [contentType, setContentType] = useState(null);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+
+  const uploadBaseURL = process.env.REACT_APP_UPLOAD_URL;
+  const previewBaseURL = process.env.REACT_APP_PREVIEW_URL;
+  const convertBaseURL = process.env.REACT_APP_SIMPLE_CONVERT_URL;
+  const authConvertBaseURL = process.env.REACT_APP_AUTH_CONVERT_URL;
   
   // Refs for content containers
   const textContainerRef = useRef(null);
@@ -45,27 +53,19 @@ function App() {
     formData.append('file', file);
 
     try {
-      let response = await fetch('https://rapidford.onrender.com/upload/', {
+      let response = await fetch(uploadBaseURL, {
         method: 'POST',
         headers: {
-          'Access-Control-Allow-Origin':'*'
+          'Accept': 'application/json',
         },
-        body: formData,
-        mode: 'cors'
+        credentials: 'include',
+        body: formData
       });
 
       response = await response.json();
       console.log('Filedetails: ',response);
-      if (response.type === 'opaque') {
-        // Assuming upload was successful since we can't read the response
-        const fileName = file.name;
-        const actualFileKey = fileName.replace(/\.[^/.]+$/, '');
-        setFileKey(actualFileKey);
-        setResponseMessage(`File uploaded successfully: ${fileName}`);
-        console.log('File processed with key:', actualFileKey); // Debug log
-      } else {
-        throw new Error('Upload failed - unexpected response type');
-      }
+      const actualKey = response.fileDetails.key.replace("uploads/", "").replace(/\.[^/.]+$/, "");
+      setFileKey(actualKey);
     } catch (error) {
       console.error('Upload error:', error); // Debug log
       setUploadError(`Upload failed: ${error.message}`);
@@ -84,7 +84,7 @@ function App() {
     setStreamContent('');
     setResponseMessage('');
     
-    const response = await fetch(`https://rapidford-1.onrender.com/preview/${fileKey}`, {
+    const response = await fetch(`${previewBaseURL}${fileKey}`, {
       method: 'GET',
     });
 
@@ -154,7 +154,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(`https://rapidford-4.onrender.com/convert/${fileKey}`, {
+      const response = await fetch(`${convertBaseURL}${fileKey}`, {
         method: 'GET',
       });
 
@@ -186,12 +186,13 @@ function App() {
     }
 
     try {
-      const response = await fetch(`https://rapidford-5.onrender.com/convertAuth/${fileKey}`, {
+      const response = await fetch(`${authConvertBaseURL}${fileKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ password }),
+        mode: 'cors',
       });
 
       if (response.ok) {
@@ -308,6 +309,16 @@ function App() {
             Download PDF
           </a>
         </div>
+      )}
+
+      {/* Floating Action Button */}
+      <button className="fab" onClick={() => setShowAboutModal(true)}>
+        ?
+      </button>
+
+      {/* About Modal */}
+      {showAboutModal && (
+        <AboutModal onClose={() => setShowAboutModal(false)} />
       )}
     </div>
   );

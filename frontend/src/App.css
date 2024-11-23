@@ -111,3 +111,27 @@ input[type="password"] {
 .download-link:hover {
   background-color: #218838;
 }
+
+/* App.css (Add this at the end) */
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.fab:hover {
+  background-color: #218838;
+}
+
+.fab:focus {
+  outline: none;
+}

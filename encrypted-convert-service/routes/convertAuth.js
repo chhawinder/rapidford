@@ -54,9 +54,9 @@ const createEncryptedPDF = (text, password) => {
 };
 
 router.post('/:fileKey', async (req, res) => {
-  const { fileKey } = req.params;
+  let { fileKey } = req.params;
   const { password } = req.body;
-  
+  fileKey = 'uploads/' + fileKey + '.docx';
   if (!password) {
     return res.status(400).json({ error: 'Password is required' });
   }

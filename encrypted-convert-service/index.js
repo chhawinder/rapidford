@@ -6,23 +6,33 @@ import  convertRouter  from "./routes/convertAuth.js"; // Import the conversion 
 dotenv.config(); // Load environment variables from the .env file
 
 const app = express();
+const corsOptions = {
+  origin: 'http://localhost:3000', // Your React app's URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // Enable credentials (cookies, authorization headers, etc.)
+};
 
-const allowedDomain = 'https://rapidford-6.onrender.com/';
+// Apply CORS middleware with options
 
-// Configure CORS
-app.use(cors({
-    origin: allowedDomain, // Only allow this domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Headers allowed in requests
-    credentials: true // Enable credentials sharing if needed
-}));
-// Middleware setup
-app.use(express.json()); // Parse incoming JSON requests
+app.use(cors(corsOptions));
+// Parse incoming JSON requests
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Credentials');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
+
 
 console.log("working...");
 
 // Serve the conversion route
-app.use("/convertAuth", convertRouter);
+app.use("/convert-auth", convertRouter);
 
 const port = process.env.PORT || 5004; // You can change the port number if needed
 // Handle default root request

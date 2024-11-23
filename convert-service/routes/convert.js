@@ -23,7 +23,8 @@ const streamToBuffer = (stream) => {
 
 // Route to convert Word file to PDF
 router.get('/:fileKey', async (req, res) => {
-  const { fileKey } = req.params;
+  let { fileKey } = req.params;
+  fileKey = 'uploads/' + fileKey + '.docx';
   console.log(`[START] Fetching file: ${fileKey}`);
 
   try {
