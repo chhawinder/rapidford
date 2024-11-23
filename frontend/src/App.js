@@ -49,6 +49,7 @@ function App() {
           Accept: 'application/json',
         },
         body: formData,
+        mode: 'no-cors'
       });
       
       const data = await response.json();
