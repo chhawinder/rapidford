@@ -25,7 +25,7 @@ const upload = multer({
 });
 
 // Route for uploading files to S3
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/", upload.single("file"), async (req, res, next) => {
   try {
     console.log("Received request to upload file.");
 
@@ -52,7 +52,10 @@ router.post("/", upload.single("file"), async (req, res) => {
 
     // If you want to send to SQS, you can do it here
     // await sendToQueue(fileDetails);
-
+    if(req.method === 'OPTIONS'){
+      return res.status(204).send('');
+      next();
+    }
     res.status(200).json({
       message: "File uploaded successfully",
       fileDetails
