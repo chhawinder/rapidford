@@ -1,68 +1,69 @@
 import express from "express";
 import multer from "multer";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../config/awsConfig.js";
-import { sendToQueue } from "../utils/sqsUtils.js";
 import path from "path";
-import fs from "fs";
+import crypto from 'crypto';
+import multerS3 from 'multer-s3';
 
 const router = express.Router();
 
-// Configure Multer for temporary storage
-const upload = multer({ dest: "uploads/" });
+// Configure multer-s3 for direct uploads to S3
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.AWS_S3_BUCKET_NAME,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (req, file, cb) => {
+      const fileExtension = path.extname(file.originalname);
+      const fileKey = `uploads/${crypto.randomUUID()}${fileExtension}`;
+      cb(null, fileKey);
+    }
+  }),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit, adjust as needed
+  }
+});
 
-// Route for uploading files to S3 and pushing metadata to SQS queue
+// Route for uploading files to S3
 router.post("/", upload.single("file"), async (req, res) => {
   try {
+    console.log("Received request to upload file.");
+
     const file = req.file;
-    console.log("File:",req.file);
+    console.log("File received:", file);
 
     if (!file) {
+      console.log("No file uploaded.");
       return res.status(400).json({ error: "No file uploaded." });
-    }   
+    }
 
-    const fileContent = fs.readFileSync(file.path);
-
-    const originalFileName =path.basename(file.path);
-    console.log("name:", originalFileName);
-    
-
-    const fileExtension = '.docx';  // Extract the extension
-    console.log("extension:", fileExtension);
-    const fileKey = `${crypto.randomUUID()}${fileExtension}`; // Add the extension
-
-    // console.log(fileContent)
-    console.log("File key:", fileKey);
-    // Upload file to S3
-    const uploadParams = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: fileKey,
-      Body: fileContent,
-      ContentType: file.mimetype,
+    // With multer-s3, the file is already uploaded to S3 at this point
+    // The file object contains useful metadata
+    const fileDetails = {
+      bucket: process.env.AWS_S3_BUCKET_NAME,
+      key: file.key,
+      location: file.location, // The S3 URL of the uploaded file
+      size: file.size,
+      mimetype: file.mimetype,
+      etag: file.etag
     };
-    console.log("Uploading to S3...");
 
-    const command = new PutObjectCommand(uploadParams);
-    await s3.send(command);
+    console.log("File successfully uploaded to S3:", fileDetails);
 
-    // Push metadata to SQS queue
-    const message = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: fileKey,
-      Size: file.size,
-      Mimetype: file.mimetype,
-    };
-    console.log("Pushing metadata to SQS...");
-
-    await sendToQueue(message);
+    // If you want to send to SQS, you can do it here
+    // await sendToQueue(fileDetails);
 
     res.status(200).json({
-      message: "File uploaded successfully and pushed to queue.",
-      fileDetails: message,
+      message: "File uploaded successfully",
+      fileDetails
     });
+
   } catch (err) {
-    console.error("Error uploading file or sending to queue:", err);
-    res.status(500).json({ error: "Internal server error." });
+    console.error("Error uploading file:", err);
+    res.status(500).json({ 
+      error: "Internal server error",
+      message: err.message 
+    });
   }
 });
 
