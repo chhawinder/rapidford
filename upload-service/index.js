@@ -106,7 +106,7 @@ const allowedDomain = 'https://rapidford-6.onrender.com/';
 
 // Configure CORS
 app.use(cors({
-    origin: allowedDomain, // Only allow this domain
+    origin: '*', // Only allow this domain
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Headers allowed in requests
     credentials: true // Enable credentials sharing if needed
