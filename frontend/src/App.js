@@ -49,10 +49,10 @@ function App() {
           Accept: 'application/json',
         },
         body: formData,
-        mode: 'no-cors'
       });
-
+      
       const data = await response.json();
+      console.log('Response: ',data);
       console.log('Filedetails: ',data);
       if (response.ok) {
         const actualFileKey = data.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
