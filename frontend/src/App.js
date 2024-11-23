@@ -56,16 +56,19 @@ function App() {
 
       
       console.log('Filedetails: ',response);
-      if (response.ok) {
-        const actualFileKey = response.fileDetails.key.replace(/^uploads\//, '').replace(/\.[^/.]+$/, '');;
-        console.log('Actual file key: ',actualFileKey);
+      if (response.type === 'opaque') {
+        // Assuming upload was successful since we can't read the response
+        const fileName = file.name;
+        const actualFileKey = fileName.replace(/\.[^/.]+$/, '');
         setFileKey(actualFileKey);
-        setResponseMessage(`File uploaded successfully: ${response.fileDetails.key}`);
+        setResponseMessage(`File uploaded successfully: ${fileName}`);
+        console.log('File processed with key:', actualFileKey); // Debug log
       } else {
-        setResponseMessage(`Error: ${response.error}`);
+        throw new Error('Upload failed - unexpected response type');
       }
     } catch (error) {
-      setResponseMessage(`Error: ${error.message}`);
+      console.error('Upload error:', error); // Debug log
+      setUploadError(`Upload failed: ${error.message}`);
     }
   };
 
